@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #define MAX_SIZE 101
 
-char *buffer = NULL;
 int *lines = NULL;
 int size = 1;
 int counterLines = 0;
@@ -69,8 +68,7 @@ int main(int argc, char **argv){
     loader(argv[1]);
     
     loop();
-    
-    free(buffer);
+
     free(lines);
     pclose(file);
     
