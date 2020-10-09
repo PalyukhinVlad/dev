@@ -1,32 +1,34 @@
 #include <stdio.h>
 #include <stdlib.h>
+#define MAX_SIZE 101
 
 char *buffer = NULL;
 int *lines = NULL;
 int size = 1;
 int counterLines = 0;
+FILE *file;
 
 void loop(){
     int row = -1;
+    char _string[MAX_SIZE];
     
     while(row != 0){
         printf("Enter row num: ");
         scanf("%u", &row);
-        printf("\n");
         
         if(row > counterLines){
             printf("row non exist\n");
         } else {
             if (row == 1){
-                for (int i = 0; i < lines[row - 1]; i++){
-                    printf("%c", buffer[i]);
-                }
-            } else {             
-                for(int i = lines[row - 2] + 1; i < lines[row - 1]; i++){
-                    printf("%c", buffer[i]);
-                }
+                fseek(file, 0, SEEK_SET);
+                fgets(_string, MAX_SIZE, file);
+                printf("%s\n", _string);
+            } else {     
+                fseek(file, lines[row - 2], SEEK_SET);
+                fgets(_string, MAX_SIZE, file);
+                printf("%s\n", _string);      
             }
-         printf("\n");
+        *_string = '\0'; 
         }
     }
 }
@@ -35,29 +37,16 @@ void dataSet(FILE *file){
     fseek(file, 0L, SEEK_END);
     unsigned int fSize = ftell(file);
     rewind(file);
-    
-    buffer = (char*)malloc(sizeof(char) * fSize);
-    
-    if (buffer == NULL){
-        printf("malloc() error.\n");
-        exit(2);
-    }
-    
-    size_t readResult = fread(buffer, sizeof(char), fSize, file);
-    if(readResult != fSize){
-        printf("Read error.\n");
-        exit(3);
-    }
-    
+
     lines = (int*)calloc(size, sizeof(int));
-    
-    for(int i = 0; i < fSize; i++){
-        if(buffer[i] == '\n'){
+
+    char ch;
+    while((ch = fgetc(file)) != EOF){
+        if (ch == '\n'){
             size += 2;
             lines = (int*)realloc(lines, (size)*sizeof(int));       
-            lines[counterLines] = i;
+            lines[counterLines] = (ftell(file) +1);
             counterLines += 1;
-            printf("\n");
         } else {
             continue;
         }
@@ -66,7 +55,7 @@ void dataSet(FILE *file){
 
 
 void loader(char *path){
-    FILE *file = fopen(path, "r");
+    file = fopen(path, "r");
     
     if(file == NULL){
         printf("Error. Can't open file %s\n", path);
@@ -74,7 +63,6 @@ void loader(char *path){
     } else {
         dataSet(file);
     }
-    fclose(file);
 }
 
 int main(int argc, char **argv){
@@ -84,6 +72,7 @@ int main(int argc, char **argv){
     
     free(buffer);
     free(lines);
+    pclose(file);
     
     return 0;
 }
