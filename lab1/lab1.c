@@ -33,9 +33,7 @@ void loop(){
 }
 
 void dataSet(FILE *file){
-    fseek(file, 0L, SEEK_END);
-    unsigned int fSize = ftell(file);
-    rewind(file);
+
 
     lines = (int*)calloc(size, sizeof(int));
 
