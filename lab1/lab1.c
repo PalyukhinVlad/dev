@@ -33,8 +33,6 @@ void loop(){
 }
 
 void dataSet(FILE *file){
-
-
     lines = (int*)calloc(size, sizeof(int));
 
     char ch;

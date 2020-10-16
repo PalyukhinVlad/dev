@@ -1,20 +1,21 @@
-#include <sys/mman.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/io.h>
 #include <sys/stat.h>
-#include <unistd.h>
-#include <sys/types.h>
 #include <fcntl.h>
-
-#define MAX_SIZE 101
+#include <unistd.h>
+#include <sys/mman.h>
 
 int *lines = NULL;
 int size = 1;
 int counterLines = 0;
-char *pmap;
-struct stat sb;
+char *file_mem;
 
-void loop(char *pmap){
+struct stat statbuf;
+int fd;
+
+void loop(){
+
     int row = -1;
     
     while(row != 0){
@@ -22,70 +23,62 @@ void loop(char *pmap){
         scanf("%u", &row);
         
         if(row > counterLines){
-            printf("row non exist\n");
+            printf("row non exist.\n");
         } else {
             if (row == 1){
-                for(int i = 0; i < lines[row - 1] + 1; i++){
-                    printf("%c", pmap[i]);
-                }
+                for(int i = 0; i < lines[row - 1]; i++)
+                    printf("%c", file_mem[i]);
+                printf("\n");
             } else {     
-                for(int i = lines[row - 2] + 1; i < lines[row - 1] + 1; i++){
-                    printf("%c", pmap[i]);
-                }    
+                for(int i = lines[row - 2]; i < lines[row - 1]; i++)
+                    printf("%c", file_mem[i]);
+                printf("\n");     
+            }
+        }
+    }
+
+    if(munmap(file_mem, statbuf.st_size) == -1){
+        printf("unmap failed");
+        close(fd);
+    }
+    close(fd);   
+}
+
+void dataSet(char* path){
+
+    if((fd = open(path, O_RDONLY)) == -1) {
+        printf("Cannot open file <%s>.\n", path);
+        exit(1);
+    } else {
+        int status = fstat(fd, &statbuf);
+
+        file_mem = mmap(NULL, statbuf.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
+        if(file_mem == MAP_FAILED){
+            printf("Mapping failed\n");
+            close(fd);
+            exit(1);
+        }
+
+        lines = (int*)calloc(size, sizeof(int));
+
+        for(int i = 0; i < statbuf.st_size; i++){
+            if (file_mem[i] == '\n'){
+                size += 2;
+                lines = (int*)realloc(lines, (size)*sizeof(int));       
+                lines[counterLines] = i;
+                counterLines += 1;
+            } else {
+                continue;
             }
         }
     }
 }
 
-
-
-char* dataSet(int fd){
-
-    if(fstat(fd, &sb) == -1){
-        perror("couldn't get file size.\n");
-    }
-
-    printf("file size id %ld\n", sb.st_size);
-    pmap = mmap(NULL, sb.st_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-
-    if(pmap == MAP_FAILED){
-        perror("mmap");
-        exit(1);
-    }
-
-    printf("%s", pmap);
-    return pmap;
-    
-    //--------------------------------------------
-
-    /*fseek(file, 0L, SEEK_END);
-    unsigned int fSize = ftell(file);
-    rewind(file);
-
-    lines = (int*)calloc(size, sizeof(int));
-
-    char ch;
-    while((ch = fgetc(file)) != EOF){
-        if (ch == '\n'){
-            size += 2;
-            lines = (int*)realloc(lines, (size)*sizeof(int));       
-            lines[counterLines] = (ftell(file) +1);
-            counterLines += 1;
-        } else {
-            continue;
-        }
-    }*/
-}
-
 int main(int argc, char **argv){
-    //loader
-    int fd = open(argv[1], O_RDONLY);
-    
-    
-    loop(dataSet(fd));
+    dataSet(argv[1]);
+    loop();
 
     free(lines);
-    close(fd);
     
     return 0;
 }
