@@ -1,30 +1,20 @@
-thrd_second[0] - random number: 191
-thrd_second[1] - random number: 191
-thrd_second[2] - random number: 199
-thrd_second[3] - random number: 234
-thrd_second[4] - random number: 168
-thrd_second[5] - random number: 246
-thrd_second[6] - random number: 134
-thrd_second[7] - random number: 296
-thrd_second[8] - random number: 102
-thrd_second[9] - random number: 169
-thrd_first[0] - random number: 98
-thrd_first[1] - random number: 3
-thrd_first[2] - random number: 98
-thrd_first[3] - random number: 45
-thrd_first[4] - random number: 39
-thrd_first[5] - random number: 96
-thrd_first[6] - random number: 60
-thrd_first[7] - random number: 39
-thrd_first[8] - random number: 99
-thrd_first[9] - random number: 83
-thrd_first[10] - random number: 37
-thrd_first[11] - random number: 65
-thrd_first[12] - random number: 40
-thrd_first[13] - random number: 31
-thrd_first[14] - random number: 0
-thrd_first[15] - random number: 96
-thrd_first[16] - random number: 67
-thrd_first[17] - random number: 91
-thrd_first[18] - random number: 55
-thrd_first[19] - random number: 70
+thrd_first - iteration[0] - random number: 52
+thrd_second - iteration[0] - random number: 155
+thrd_second - iteration[1] - random number: 145
+thrd_first - iteration[1] - random number: 0
+thrd_second - iteration[2] - random number: 201
+thrd_first - iteration[2] - random number: 58
+thrd_second - iteration[3] - random number: 184
+thrd_first - iteration[3] - random number: 68
+thrd_second - iteration[4] - random number: 211
+thrd_first - iteration[4] - random number: 70
+thrd_second - iteration[5] - random number: 134
+thrd_first - iteration[5] - random number: 75
+thrd_second - iteration[6] - random number: 103
+thrd_first - iteration[6] - random number: 24
+thrd_second - iteration[7] - random number: 130
+thrd_first - iteration[7] - random number: 15
+thrd_second - iteration[8] - random number: 188
+thrd_first - iteration[8] - random number: 70
+thrd_second - iteration[9] - random number: 169
+thrd_first - iteration[9] - random number: 8
