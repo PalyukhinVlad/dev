@@ -8,11 +8,14 @@
 #include <unistd.h>
 #include <errno.h>
 
-#define SEMAPHORE_NAME "/semaphore"
+#define FIRST_SEMAPHORE_NAME "/semFirst"
+#define SECOND_SEMAPHORE_NAME "/semSecond"
+
 #define FILE_NAME "log.txt"
 
 FILE *file;
-sem_t *sem;
+sem_t *sem_frst;
+sem_t *sem_sec;
 
 
 void* thrd_first(void *_data){
@@ -22,7 +25,7 @@ void* thrd_first(void *_data){
 	srand(time(NULL));
 
 	for (int i = 0; i < data; i++){
-		if(sem_wait(sem) == -1){
+		if(sem_wait(sem_frst) == -1){
 			fprintf(file, "sem_wait error: %d", errno);
 			exit(5);
 		}
@@ -33,7 +36,7 @@ void* thrd_first(void *_data){
 
 		printf("thrd_first - iteration[%d] - random number: %d\n", i,r);
 		
-		if(sem_post(sem) == -1){
+		if(sem_post(sem_sec) == -1){
 			fprintf(file, "sem_post error: %d", errno);
 			exit(6);
 		}
@@ -51,7 +54,7 @@ void* thrd_second(void *_data){
 	srand(time(NULL));
 
 	for (int i = 0; i < data; i++){
-		if(sem_wait(sem) == -1){
+		if(sem_wait(sem_sec) == -1){
 			fprintf(file, "sem_wait error: %d", errno);
 			exit(5);
 		}
@@ -62,7 +65,7 @@ void* thrd_second(void *_data){
 
 		printf("thrd_second - iteration[%d] - random number: %d\n", i,r);
 		
-		if(sem_post(sem) == -1){
+		if(sem_post(sem_frst) == -1){
 			fprintf(file, "sem_post error: %d", errno);
 			exit(6);
 		}
@@ -80,8 +83,14 @@ int main(){
 		exit(1);
 	}
 
-	sem = sem_open(SEMAPHORE_NAME, O_CREAT, 0777, 1);
-	if(sem == SEM_FAILED){
+	sem_frst = sem_open(FIRST_SEMAPHORE_NAME, O_CREAT, 0777, 1);
+	if(sem_frst == SEM_FAILED){
+		fprintf(file, "sem_open error: cant create semophore errno: %d", errno);
+		exit(2);
+	}
+
+	sem_sec = sem_open(SECOND_SEMAPHORE_NAME, O_CREAT, 0777, 0);
+	if(sem_sec == SEM_FAILED){
 		fprintf(file, "sem_open error: cant create semophore errno: %d", errno);
 		exit(2);
 	}
@@ -115,8 +124,13 @@ int main(){
 		exit(4);
 	}
 	
-	if(sem_close(sem) == -1){
-		fprintf(file, "sem_close error: %d", errno);
+	if(sem_close(sem_frst) == -1){
+		fprintf(file, "sem_frst_close error: %d", errno);
+		exit(7);
+	}
+
+	if(sem_close(sem_sec) == -1){
+		fprintf(file, "sem_sec_close error: %d", errno);
 		exit(7);
 	}
 	
