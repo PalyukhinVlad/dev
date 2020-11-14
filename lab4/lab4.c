@@ -114,11 +114,12 @@ int main(){
 		fprintf(file, "thrd_sec error: cant join thread, status = %d\n", status);
 		exit(4);
 	}
-
+	
 	if(sem_close(sem) == -1){
 		fprintf(file, "sem_close error: %d", errno);
 		exit(7);
 	}
+	
 	fclose(file);
 	
 	return 0;
