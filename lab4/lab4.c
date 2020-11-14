@@ -37,7 +37,7 @@ void* thrd_first(void *_data){
 			fprintf(file, "sem_post error: %d", errno);
 			exit(6);
 		}
-		usleep(1000);
+		//usleep(1000);
 	}
 
 	pthread_exit(0);
@@ -66,7 +66,7 @@ void* thrd_second(void *_data){
 			fprintf(file, "sem_post error: %d", errno);
 			exit(6);
 		}
-		usleep(1000);
+		//usleep(1000);
 	}
 
 	pthread_exit(0);
