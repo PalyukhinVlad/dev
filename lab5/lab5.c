@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <ctype.h>
 #include <time.h>
 
 //65 - 90; 97 - 122 [A - Z; a - z]
@@ -18,7 +19,7 @@ void generator(){
 		chars[n] = (char) i;
 
 	srand(time(NULL));
-	
+
 	for (int i = 0; i < 10; i++){
 		r = rand() % 52;
 		str[i] = chars[r];
@@ -26,7 +27,16 @@ void generator(){
 
 	fprintf(stdout, "%s\n", chars);
 	fprintf(stdout, "%s\n", str);
+}
 
+void upperer(char *str){
+	int i = 0;
+	char strUp[100];
+	while(str[i] != '\n'){
+		strUp[i] = toupper(str[i]);
+		i++;
+	}
+	fprintf(stdout, "%s\n", strUp);
 }
 
 int main(){
@@ -40,6 +50,7 @@ int main(){
 	}
 	case 0:{
 		//child
+		upperer("wsaFEFSSfu\n");
 		exit(0);
 	}
 	default:{
